@@ -40,10 +40,21 @@ export default {
   },
   methods: {
     logMeIn(user) {
-      this.authenticatedUsername = user.login;
+      axios.post('/api/tokens', user)
+      .then(response => {
+        this.authenticatedUsername = user.login;
+        const token = response.data.token;
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + token; //tutaj definiujemy żeby axios wrzucał do każdego żądania Bearer token
+        axios.get('/api/meetings').then(response => console.log(response.data));
+      })
+      .catch(response =>
+      {
+        this.message = 'Niepoprawne logowanie';
+      })
     },
     logMeOut() {
       this.authenticatedUsername = '';
+      delete axios.defaults.headers.common.Authorization;
     },
     register(user) {
       axios.post('/api/participants', user)
