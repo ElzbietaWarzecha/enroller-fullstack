@@ -3,6 +3,7 @@
     <NewMeetingForm @added="addNewMeeting($event)"></NewMeetingForm>
     <span v-if="meetings.length == 0">Brak zaplanowanych spotkań.</span>
     <h3 v-else>Zaplanowane zajęcia ({{ meetings.length }})</h3>
+    <button @click='getParticipants()'>Pobierz uczestników</button>
     <MeetingsList :meetings="meetings"
                   :username="username"
                   @attend="addMeetingParticipant($event)"
@@ -15,6 +16,7 @@
 import NewMeetingForm from "./NewMeetingForm";
 import MeetingsList from "./MeetingsList";
 import axios from "axios";
+import { onMounted } from "vue";
 
 export default {
   components: {NewMeetingForm, MeetingsList},
@@ -27,13 +29,41 @@ export default {
     };
   },
   created() {
+    let dbData = [];
     axios.get('/api/meetings')
           .then(response => (
-            this.meetings = (response.data)
-          ))
-          .catch(error => console.log(error))
-    },
+            dbData = (response.data),
+                dbData.forEach(element => {
+                    axios.get('/api/meetings/' + element.id + '/participants')
+                      .then(response => (
+                      element.participants = (response.data)
+                      ))
+                      .catch(error => console.log(error))
+            }), 
+            this.meetings = dbData   
+              ))
+          .catch(error => console.log(error));    
+  },
+  // mounted() {
+  //         this.meetings.forEach(element => {
+  //       axios.get('/api/meetings/' + element.id + '/participants')
+  //       .then(response => (
+  //         element.participants = (response.data)
+  //           ))
+  //           .catch(error => console.log(error));
+  //     });
+  //   },
   methods: {
+    getParticipants() {
+      this.meetings.forEach(element => {
+        axios.get('/api/meetings/' + element.id + '/participants')
+        .then(response => (
+          element.participants = (response.data)
+            ))
+            .catch(error => console.log(error));
+      });
+    },
+
     addNewMeeting(meeting) {
       this.meetings.push(meeting);
         axios.post('/api/meetings', meeting)
