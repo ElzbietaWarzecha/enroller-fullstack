@@ -19,7 +19,7 @@ public class MeetingService {
     }
 
     public Collection<Meeting> getAll() {
-        String hql = "FROM Meeting";
+        String hql = "select * from meeting m join meeting_participant p on m.id = p.meeting.id";
         Query query = this.session.createQuery(hql);
         return query.list();
     }
@@ -29,7 +29,10 @@ public class MeetingService {
     }
 
     public Collection<Meeting> findMeetings(String title, String description, Participant participant, String sortMode) {
-        String hql = "FROM Meeting as meeting WHERE title LIKE :title AND description LIKE :description ";
+        String hql = "FROM Meeting as meeting WHERE title LIKE :title ";
+        if( description != null) {
+            hql += " AND description LIKE :description ";
+        }
         if (participant != null) {
             hql += " AND :participant in elements(participants)";
         }

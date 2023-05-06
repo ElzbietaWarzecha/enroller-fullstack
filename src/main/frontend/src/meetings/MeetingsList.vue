@@ -9,9 +9,10 @@
     </tr>
     </thead>
     <tbody>
-    <tr v-for="meeting in meetings" :key="meeting.name">
-      <td>{{ meeting.name }}</td>
+    <tr v-for="meeting in meetings" :key="meeting.title">
+      <td>{{ meeting.title }}</td>
       <td>{{ meeting.description }}</td>
+      <button @click='getParticipants'>Pobierz uczestników</button>
       <td>
         <ul v-if="meeting.participants">
           <li v-for="participant in meeting.participants" :key="participant">
@@ -36,10 +37,21 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   props: {
     meetings: Array,
     username: String,
-  }
+  },
+  methods: {
+    getParticipants() {
+        axios.get('/api/meetings/' + meeting.id + '/participants')
+        .then(response => (
+          this.meeting.participants = (response.data)
+            ))
+            .catch(error => console.log(error));
+    },
+  } 
 }
 </script>

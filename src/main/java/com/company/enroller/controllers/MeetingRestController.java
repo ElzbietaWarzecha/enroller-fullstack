@@ -23,18 +23,22 @@ public class MeetingRestController {
     ParticipantService participantService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<?> findMeetings(@RequestParam(value = "title", defaultValue = "") String title,
-                                          @RequestParam(value = "description", defaultValue = "") String description,
-                                          @RequestParam(value = "sort", defaultValue = "") String sortMode,
-                                          @RequestParam(value = "participantLogin", defaultValue = "") String participantLogin) {
-
-        Participant foundParticipant = null;
-        if (!participantLogin.isEmpty()) {
-            foundParticipant = participantService.findByLogin(participantLogin);
-        }
-        Collection<Meeting> meetings = meetingService.findMeetings(title, description, foundParticipant, sortMode);
+    public ResponseEntity<?> findMeetings() {
+        Collection<Meeting> meetings = meetingService.getAll();
         return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
-    }
+    }  
+    // public ResponseEntity<?> findMeetings(@RequestParam(value = "title", defaultValue = "") String title,
+    //                                       @RequestParam(value = "description", defaultValue = "") String description,
+    //                                       @RequestParam(value = "sort", defaultValue = "") String sortMode,
+    //                                       @RequestParam(value = "participantLogin", defaultValue = "") String participantLogin) {
+
+    //     Participant foundParticipant = null;
+    //     if (!participantLogin.isEmpty()) {
+    //         foundParticipant = participantService.findByLogin(participantLogin);
+    //     }
+    //     Collection<Meeting> meetings = meetingService.findMeetings(title, description, foundParticipant, sortMode);
+    //     return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+    // }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getMeeting(@PathVariable("id") long id) {
