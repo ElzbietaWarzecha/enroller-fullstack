@@ -12,16 +12,16 @@
     <tr v-for="meeting in meetings" :key="meeting.title">
       <td>{{ meeting.title }}</td>
       <td>{{ meeting.description }}</td>
-      <button @click='getParticipants'>Pobierz uczestników</button>
       <td>
         <ul v-if="meeting.participants">
-          <li v-for="participant in meeting.participants" :key="participant">
-            {{ participant }}
+          <li v-for="participant in meeting.participants" :key="participant.login">
+            {{ participant.login }}
           </li>
         </ul>
       </td>
       <td style="text-align: right; min-width: 400px" v-if="meeting.participants">
-        <button v-if="meeting.participants.indexOf(username) < 0"
+        <button v-if="!meeting.participants.
+        get(loggedParticipant)"
                 class="button-outline"
                 @click="$emit('attend', meeting)">
           Zapisz się
@@ -37,21 +37,20 @@
 </template>
 
 <script>
-import axios from "axios";
+
 
 export default {
   props: {
     meetings: Array,
     username: String,
   },
-  methods: {
-    getParticipants() {
-        axios.get('/api/meetings/' + meeting.id + '/participants')
-        .then(response => (
-          this.meeting.participants = (response.data)
-            ))
-            .catch(error => console.log(error));
-    },
-  } 
+  data() {
+    return {
+      loggedParticipant: {
+        login: this.username,
+      },
+    };
+  },
+  setup(props){}
 }
 </script>
