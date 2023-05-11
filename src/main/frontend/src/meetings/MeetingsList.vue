@@ -20,8 +20,7 @@
         </ul>
       </td>
       <td style="text-align: right; min-width: 400px" v-if="meeting.participants">
-        <button v-if="!meeting.participants.
-        get(loggedParticipant)"
+        <button v-if="meeting.participants.indexOf(username)"
                 class="button-outline"
                 @click="$emit('attend', meeting)">
           Zapisz się
@@ -43,13 +42,6 @@ export default {
   props: {
     meetings: Array,
     username: String,
-  },
-  data() {
-    return {
-      loggedParticipant: {
-        login: this.username,
-      },
-    };
   },
   setup(props){}
 }

@@ -3,7 +3,6 @@
     <NewMeetingForm @added="addNewMeeting($event)"></NewMeetingForm>
     <span v-if="meetings.length == 0">Brak zaplanowanych spotkań.</span>
     <h3 v-else>Zaplanowane zajęcia ({{ meetings.length }})</h3>
-    <button @click='getParticipants()'>Pobierz uczestników</button>
     <MeetingsList :meetings="meetings"
                   :username="username"
                   @attend="addMeetingParticipant($event)"
@@ -16,7 +15,6 @@
 import NewMeetingForm from "./NewMeetingForm";
 import MeetingsList from "./MeetingsList";
 import axios from "axios";
-import { onMounted } from "vue";
 
 export default {
   components: {NewMeetingForm, MeetingsList},
@@ -42,7 +40,7 @@ export default {
             }), 
             this.meetings = dbData   
               ))
-          .catch(error => console.log(error));    
+          .catch(error => console.log(error));      
   },
   // mounted() {
   //         this.meetings.forEach(element => {
@@ -54,32 +52,30 @@ export default {
   //     });
   //   },
   methods: {
-    getParticipants() {
-      this.meetings.forEach(element => {
-        axios.get('/api/meetings/' + element.id + '/participants')
-        .then(response => (
-          element.participants = (response.data)
-            ))
-            .catch(error => console.log(error));
-      });
-    },
-
     addNewMeeting(meeting) {
       this.meetings.push(meeting);
         axios.post('/api/meetings', meeting)
-          .then(() => {
-            this.success('Spotkanie zostało dodane.');
+        .then(response => {
+            console.log('Spotkanie zostało dodane.');
           })
           .catch(error => console.log(error))
     },
     addMeetingParticipant(meeting) {
-      meeting.participants.push(this.username);
+      this.meetings.at(this.meetings.indexOf(meeting)).participants.push(this.username);
+      axios.post('/api/meetings/' + meeting.id + '/participants', {login:this.username} )
+        .then(() => {
+          console.log('Uczestnik nie został dodany do spotkania');
+        })
     },
     removeMeetingParticipant(meeting) {
       meeting.participants.splice(meeting.participants.indexOf(this.username), 1);
+      axios.delete('/api/meetings/' + this.meetings.indexOf(meeting).id + '/participants' + this.username)
+        .then(() => {
+          console.log('Uczestnik nie został usunięty ze spotkania');
+        })
     },
     deleteMeeting(meeting) {
-      axios.delete('/api/meetings/' + meeting.id)
+      axios.delete('/api/meetings/' + this.meetings.indexOf(meeting).id + '/participants/' + this.username)
           .then(() => {
             console.log('Spotkanie zostało usunięte.');
           })
@@ -99,22 +95,5 @@ export default {
     },
   }
 }
-async function returnMeetingByTitle(meeting){
-        let config = {
-        params: {
-          title: meeting.title
-        }
-      }
-    let response = await axios.get('/api/meetings', config)
-          .then(() => {
-            foundMeeting = response.data;
-            console.log(response.data);
-            return response.data;
-          })
-          .catch(error => {
-            console.log('Błąd!!!');
-          });
-          
-        }  
        
 </script>
