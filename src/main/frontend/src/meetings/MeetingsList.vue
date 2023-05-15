@@ -14,13 +14,13 @@
       <td>{{ meeting.description }}</td>
       <td>
         <ul v-if="meeting.participants">
-          <li v-for="participant in meeting.participants" :key="participant.login">
-            {{ participant.login }}
+          <li v-for="participant in meeting.participants" :key="participant">
+            {{ participant }}
           </li>
         </ul>
       </td>
       <td style="text-align: right; min-width: 400px" v-if="meeting.participants">
-        <button v-if="meeting.participants.indexOf(username)"
+        <button v-if="meeting.participants.indexOf(username) < 0"
                 class="button-outline"
                 @click="$emit('attend', meeting)">
           Zapisz się
@@ -43,6 +43,6 @@ export default {
     meetings: Array,
     username: String,
   },
-  setup(props){}
+  //setup(props){}
 }
 </script>

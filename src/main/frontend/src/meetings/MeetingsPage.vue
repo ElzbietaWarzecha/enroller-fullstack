@@ -16,6 +16,10 @@ import NewMeetingForm from "./NewMeetingForm";
 import MeetingsList from "./MeetingsList";
 import axios from "axios";
 
+// const AsyncComponent = () => ({
+//   component: import ('./MeetingsList.vue'),
+// })
+
 export default {
   components: {NewMeetingForm, MeetingsList},
   props: {username: String},
@@ -28,13 +32,19 @@ export default {
   },
   created() {
     let dbData = [];
+    let participantResponse = [];
     axios.get('/api/meetings')
           .then(response => (
             dbData = (response.data),
                 dbData.forEach(element => {
                     axios.get('/api/meetings/' + element.id + '/participants')
                       .then(response => (
-                      element.participants = (response.data)
+                        participantResponse = (response.data),
+                        element.participants = [],
+                        participantResponse.forEach(pr => {
+                            element.participants.push(pr.login)
+                          })
+                        //element.participants = response.data
                       ))
                       .catch(error => console.log(error))
             }), 
