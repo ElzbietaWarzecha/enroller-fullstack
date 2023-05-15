@@ -43,6 +43,6 @@ export default {
     meetings: Array,
     username: String,
   },
-  //setup(props){}
+  //setup(props){} - to powoduje potem nie wyświetlanie nazwy usera na liście po klikaniu po stronie
 }
 </script>

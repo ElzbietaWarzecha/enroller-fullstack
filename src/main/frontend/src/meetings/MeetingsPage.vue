@@ -50,7 +50,8 @@ export default {
             }), 
             this.meetings = dbData   
               ))
-          .catch(error => console.log(error));      
+          .catch(error => console.log(error));    
+          $event(this.meetings);  
   },
   // mounted() {
   //         this.meetings.forEach(element => {
@@ -78,19 +79,23 @@ export default {
         })
     },
     removeMeetingParticipant(meeting) {
-      meeting.participants.splice(meeting.participants.indexOf(this.username), 1);
-      axios.delete('/api/meetings/' + this.meetings.indexOf(meeting).id + '/participants' + this.username)
+      let currentMeeting = this.meetings.at(this.meetings.indexOf(meeting));
+      currentMeeting.participants.splice(this.username);
+      //meeting.participants.splice(meeting.participants.indexOf(this.username), 1);
+      axios.delete('/api/meetings/' + currentMeeting.id + '/participants/' + this.username)
         .then(() => {
           console.log('Uczestnik nie został usunięty ze spotkania');
         })
     },
     deleteMeeting(meeting) {
-      axios.delete('/api/meetings/' + this.meetings.indexOf(meeting).id + '/participants/' + this.username)
+      let currentMeeting = this.meetings.at(this.meetings.indexOf(meeting));
+      this.meetings.splice(currentMeeting);
+      //this.meetings.splice(this.meetings.indexOf(meeting), 1);
+      axios.delete('/api/meetings/' + currentMeeting.id)
           .then(() => {
             console.log('Spotkanie zostało usunięte.');
           })
           .catch(error => console.log(error))
-          this.meetings.splice(this.meetings.indexOf(meeting), 1);
     },
     success(message) {
       this.message = message;
