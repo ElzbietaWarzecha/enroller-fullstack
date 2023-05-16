@@ -30,28 +30,31 @@ export default {
       isError: false,
     };
   },
-  created() {
+  created: async function() {
     let dbData = [];
     let participantResponse = [];
-    axios.get('/api/meetings')
+    //this.meetings = [];
+    await axios.get('/api/meetings')
           .then(response => (
             dbData = (response.data),
-                dbData.forEach(element => {
-                    axios.get('/api/meetings/' + element.id + '/participants')
+                dbData.forEach(async element => {
+                  //finalMeetings = element;
+                    await axios.get('/api/meetings/' + element.id + '/participants')
                       .then(response => (
                         participantResponse = (response.data),
                         element.participants = [],
                         participantResponse.forEach(pr => {
-                            element.participants.push(pr.login)
-                          })
-                        //element.participants = response.data
+                          element.participants.push(pr.login);
+                          }),
+                          this.meetings.push(element)
                       ))
                       .catch(error => console.log(error))
-            }), 
-            this.meetings = dbData   
+
+            })
+            
               ))
           .catch(error => console.log(error));    
-          $event(this.meetings);  
+          //this.meetings = finalMeetings; 
   },
   // mounted() {
   //         this.meetings.forEach(element => {
