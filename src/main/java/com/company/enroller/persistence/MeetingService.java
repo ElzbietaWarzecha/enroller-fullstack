@@ -28,11 +28,8 @@ public class MeetingService {
         return this.session.get(Meeting.class, id);
     }
 
-    public Collection<Meeting> findMeetings(String title, String description, Participant participant, String sortMode) {
+    public Collection<Meeting> findMeetings(String title, Participant participant, String sortMode) {
         String hql = "FROM Meeting as meeting WHERE title LIKE :title ";
-        if( description != null) {
-            hql += " AND description LIKE :description ";
-        }
         if (participant != null) {
             hql += " AND :participant in elements(participants)";
         }
@@ -40,7 +37,7 @@ public class MeetingService {
             hql += " ORDER BY title";
         }
         Query query = this.session.createQuery(hql);
-        query.setParameter("title", "%" + title + "%").setParameter("description", "%" + description + "%");
+        query.setParameter("title", "%" + title + "%");
         if (participant != null) {
             query.setParameter("participant", participant);
         }

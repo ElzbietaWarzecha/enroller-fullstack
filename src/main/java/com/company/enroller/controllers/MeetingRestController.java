@@ -28,7 +28,6 @@ public class MeetingRestController {
     //     return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
     // }  
     public ResponseEntity<?> findMeetings(@RequestParam(value = "title", defaultValue = "") String title,
-                                          @RequestParam(value = "description", defaultValue = "") String description,
                                           @RequestParam(value = "sort", defaultValue = "") String sortMode,
                                           @RequestParam(value = "participantLogin", defaultValue = "") String participantLogin) {
 
@@ -36,7 +35,7 @@ public class MeetingRestController {
         if (!participantLogin.isEmpty()) {
             foundParticipant = participantService.findByLogin(participantLogin);
         }
-        Collection<Meeting> meetings = meetingService.findMeetings(title, description, foundParticipant, sortMode);
+        Collection<Meeting> meetings = meetingService.findMeetings(title, foundParticipant, sortMode);
         return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
     }
 
