@@ -84,12 +84,12 @@ export default {
     },
     removeMeetingParticipant(meeting) {
       let currentMeeting = this.meetings.at(this.meetings.indexOf(meeting));
-      currentMeeting.participants.splice(this.username);
       //meeting.participants.splice(meeting.participants.indexOf(this.username), 1);
       axios.delete('/api/meetings/' + currentMeeting.id + '/participants/' + this.username)
         .then(() => {
           console.log('Uczestnik nie został usunięty ze spotkania');
         })
+      currentMeeting.participants.splice(meeting.participants.indexOf(this.username), 1);
     },
     deleteMeeting(meeting) {
       // let currentMeeting = this.meetings.at(this.meetings.indexOf(meeting));
