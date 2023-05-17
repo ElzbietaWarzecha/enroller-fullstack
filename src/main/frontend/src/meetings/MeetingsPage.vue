@@ -67,10 +67,11 @@ export default {
   //   },
   methods: {
     addNewMeeting(meeting) {
-      this.meetings.push(meeting);
         axios.post('/api/meetings', meeting)
         .then(response => {
             console.log('Spotkanie zostało dodane.');
+            meeting.id = response.data.id;
+            this.meetings.push(meeting);
           })
           .catch(error => console.log(error))
     },
@@ -91,14 +92,15 @@ export default {
         })
     },
     deleteMeeting(meeting) {
-      let currentMeeting = this.meetings.at(this.meetings.indexOf(meeting));
-      this.meetings.splice(currentMeeting);
-      //this.meetings.splice(this.meetings.indexOf(meeting), 1);
-      axios.delete('/api/meetings/' + currentMeeting.id)
+      // let currentMeeting = this.meetings.at(this.meetings.indexOf(meeting));
+      // this.meetings.splice(currentMeeting);
+      
+      axios.delete('/api/meetings/' + meeting.id)
           .then(() => {
             console.log('Spotkanie zostało usunięte.');
           })
           .catch(error => console.log(error))
+          this.meetings.splice(this.meetings.indexOf(meeting), 1);
     },
     success(message) {
       this.message = message;

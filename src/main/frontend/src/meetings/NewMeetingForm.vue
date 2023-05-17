@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -19,7 +21,8 @@ export default {
     };
   },
   methods: {
-    addNewMeeting() {
+    async addNewMeeting() {
+      let meetingId;
       this.error = false;
       if (this.newMeeting.title) {
         this.$emit('added', this.newMeeting);
