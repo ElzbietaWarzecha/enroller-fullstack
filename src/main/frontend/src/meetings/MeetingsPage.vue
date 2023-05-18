@@ -79,7 +79,7 @@ export default {
       this.meetings.at(this.meetings.indexOf(meeting)).participants.push(this.username);
       axios.post('/api/meetings/' + meeting.id + '/participants', {login:this.username} )
         .then(() => {
-          console.log('Uczestnik nie został dodany do spotkania');
+          console.log('Uczestnik został dodany do spotkania');
         })
     },
     removeMeetingParticipant(meeting) {
@@ -87,7 +87,7 @@ export default {
       //meeting.participants.splice(meeting.participants.indexOf(this.username), 1);
       axios.delete('/api/meetings/' + currentMeeting.id + '/participants/' + this.username)
         .then(() => {
-          console.log('Uczestnik nie został usunięty ze spotkania');
+          console.log('Uczestnik został usunięty ze spotkania');
         })
       currentMeeting.participants.splice(meeting.participants.indexOf(this.username), 1);
     },
