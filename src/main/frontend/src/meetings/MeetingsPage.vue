@@ -16,10 +16,6 @@ import NewMeetingForm from "./NewMeetingForm";
 import MeetingsList from "./MeetingsList";
 import axios from "axios";
 
-// const AsyncComponent = () => ({
-//   component: import ('./MeetingsList.vue'),
-// })
-
 export default {
   components: {NewMeetingForm, MeetingsList},
   props: {username: String},
@@ -33,12 +29,10 @@ export default {
   created: async function() {
     let dbData = [];
     let participantResponse = [];
-    //this.meetings = [];
     await axios.get('/api/meetings')
           .then(response => (
             dbData = (response.data),
                 dbData.forEach(async element => {
-                  //finalMeetings = element;
                     await axios.get('/api/meetings/' + element.id + '/participants')
                       .then(response => (
                         participantResponse = (response.data),
@@ -54,17 +48,7 @@ export default {
             
               ))
           .catch(error => console.log(error));    
-          //this.meetings = finalMeetings; 
   },
-  // mounted() {
-  //         this.meetings.forEach(element => {
-  //       axios.get('/api/meetings/' + element.id + '/participants')
-  //       .then(response => (
-  //         element.participants = (response.data)
-  //           ))
-  //           .catch(error => console.log(error));
-  //     });
-  //   },
   methods: {
     addNewMeeting(meeting) {
         axios.post('/api/meetings', meeting)
@@ -81,6 +65,7 @@ export default {
         .then(() => {
           console.log('Uczestnik został dodany do spotkania');
         })
+        .catch(error => console.log(error))
     },
     removeMeetingParticipant(meeting) {
       let currentMeeting = this.meetings.at(this.meetings.indexOf(meeting));
@@ -89,6 +74,7 @@ export default {
         .then(() => {
           console.log('Uczestnik został usunięty ze spotkania');
         })
+        .catch(error => console.log(error))
       currentMeeting.participants.splice(meeting.participants.indexOf(this.username), 1);
     },
     deleteMeeting(meeting) {
